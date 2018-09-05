@@ -25,7 +25,7 @@ public class Percolation {
      * @param n
      */
     public Percolation(int n) {
-        if (n<=0){
+        if (n <= 0) {
             throw new IllegalArgumentException();
         }
         this.n = n;
@@ -45,13 +45,13 @@ public class Percolation {
             return;
         }
 
-        final int[] deltaX = {-1,1,0,0};
-        final int[] deltaY = {0,0,-1,1};
+        final int[] deltaX = {-1, 1, 0, 0};
+        final int[] deltaY = {0, 0, -1, 1};
 
-        for(int i=0;i<deltaX.length;i++){
-            if (isOpenP(row+deltaX[i], col+deltaY[i])) {
-                uf.union((row - 1+deltaX[i]) * n + (col+deltaY[i]), (row - 1) * n + col);
-                uf2.union((row - 1+deltaX[i]) * n + (col+deltaY[i]), (row - 1) * n + col);
+        for (int i = 0; i < deltaX.length; i++) {
+            if (isOpenP(row + deltaX[i], col + deltaY[i])) {
+                uf.union((row - 1 + deltaX[i]) * n + (col + deltaY[i]), (row - 1) * n + col);
+                uf2.union((row - 1 + deltaX[i]) * n + (col + deltaY[i]), (row - 1) * n + col);
             }
         }
 
