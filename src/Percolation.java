@@ -17,6 +17,7 @@ public class Percolation {
     private int countOpenSite;
     private final int n;
     private final WeightedQuickUnionUF uf;
+    private final WeightedQuickUnionUF uf2;
 
     /**
      * create n-by-n grid, with all sites blocked
@@ -32,6 +33,7 @@ public class Percolation {
         grids = new boolean[n + 2][n + 2];
         //uf: 0 1-n*n n+1
         uf = new WeightedQuickUnionUF(n * n + 2);
+        uf2 = new WeightedQuickUnionUF(n * n + 2);
     }
 
     public void open(int row, int col) {
@@ -43,22 +45,19 @@ public class Percolation {
             return;
         }
 
-        if (isOpenP(row - 1, col)) {
-            uf.union((row - 2) * n + col, (row - 1) * n + col);
-        }
-        if (isOpenP(row + 1, col)) {
-            uf.union(row * n + col, (row - 1) * n + col);
-        }
-        if (isOpenP(row, col - 1)) {
-            uf.union((col - 1) + (row - 1) * n, (row - 1) * n + col);
-        }
-        if (isOpenP(row, col + 1)) {
-            uf.union((col + 1) + (row - 1) * n, (row - 1) * n + col);
-        }
+        final int[] deltaX = {-1,1,0,0};
+        final int[] deltaY = {0,0,-1,1};
 
+        for(int i=0;i<deltaX.length;i++){
+            if (isOpenP(row+deltaX[i], col+deltaY[i])) {
+                uf.union((row - 1+deltaX[i]) * n + (col+deltaY[i]), (row - 1) * n + col);
+                uf2.union((row - 1+deltaX[i]) * n + (col+deltaY[i]), (row - 1) * n + col);
+            }
+        }
 
         if (row == 1) {
             uf.union((row - 1) * n + col, 0);
+            uf2.union((row - 1) * n + col, 0);
         }
         if (row == n) {
             uf.union((row - 1) * n + col, n * n + 1);
@@ -84,7 +83,7 @@ public class Percolation {
     public boolean isFull(int row, int col) {
         // is site (row, col) full?
         checkBound(row, col);
-        return uf.connected(0, (row - 1) * n + col);
+        return uf2.connected(0, (row - 1) * n + col);
     }
 
     public int numberOfOpenSites() {
@@ -104,13 +103,21 @@ public class Percolation {
 
     public static void main(String[] args) {
         // test client (optional)
-        int n = 50;
+        int n = 3;
         Percolation p = new Percolation(n);
+//        System.out.println(p.isFull(1, 3));
+//        System.out.println(p.isFull(2, 3));
+//        System.out.println(p.isFull(3, 3));
+//        System.out.println(p.isFull(2, 1));
+//        System.out.println(p.isFull(1, 1));
+        p.open(1, 3);
+        p.open(2, 3);
+        p.open(3, 3);
+        p.open(3, 1);
+        System.out.println(p.isFull(3, 1));
+        p.open(2, 1);
+        p.open(1, 1);
         System.out.println(p.isFull(1, 2));
-        System.out.println(p.isFull(2, 2));
-        p.open(1, 2);
-        p.open(2, 2);
-        System.out.println(p.isFull(1, 2));
-        System.out.println(p.isFull(2, 2));
+        System.out.println(p.isFull(3, 3));
     }
 }
