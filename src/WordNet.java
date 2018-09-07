@@ -1,9 +1,9 @@
 import edu.princeton.cs.algs4.Digraph;
+import edu.princeton.cs.algs4.DirectedCycle;
+import edu.princeton.cs.algs4.In;
+import edu.princeton.cs.algs4.StdIn;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -22,55 +22,53 @@ import java.util.LinkedList;
 
 public class WordNet {
 
-    private HashMap<String, LinkedList<Integer>> hashMap;
+    private HashMap<String, LinkedList<Integer>> noun2id = new HashMap<>();
+    private ArrayList<String> id2noun = new ArrayList<>();
+    private SAP sap;
     private Digraph digraph;
     private final int num;
 
-    public WordNet(String synsets, String hypernyms)
-            throws IOException {
+    public WordNet(String synsets, String hypernyms) {
         // constructor takes the name of the two input files
         if (synsets == null || hypernyms == null) {
             throw new IllegalArgumentException();
         }
 
-        hashMap = new HashMap<>();
-
+        int i=0;
         String line;
-        BufferedReader bufferedReader = new BufferedReader(
-                new FileReader(new File(synsets)));
-        int i = 0;
+        In in = new In(synsets);
         while (true) {
-            line = bufferedReader.readLine();
+            line = in.readLine();
             if (line == null) {
                 break;
             }
-            String[] nones = line.split(",")[1]
-                    .split(" ");
-            for (String none : nones) {
-                if (hashMap.containsKey(none)) {
-                    hashMap.get(none).add(i);
+            String nouns = line.split(",")[1];
+            id2noun.add(nouns);
+            String[] nounList = nouns.split(" ");
+            for (String noun : nounList) {
+                if (noun2id.containsKey(noun)) {
+                    noun2id.get(noun).add(i);
                 } else {
                     LinkedList<Integer> list = new LinkedList<>();
                     list.add(i);
-                    hashMap.put(none, list);
+                    noun2id.put(noun, list);
                 }
             }
 
             i++;
         }
-        bufferedReader.close();
-        num = i+1;
+        in.close();
+        num = i;
         //init digraph
         digraph = new Digraph(num);
 
-        bufferedReader = new BufferedReader(
-                new FileReader(new File(synsets)));
-        i =0;
+        in = new In(hypernyms);
         while (true){
-            line = bufferedReader.readLine();
+            line = in.readLine();
             if (line==null){
                 break;
             }
+            i =Integer.parseInt(line.split(",")[0]);
             String[] ids = line.split(",");
             for (int j=1;j<ids.length;j++){
                 int hypernym = Integer.parseInt(ids[j]);
@@ -78,34 +76,78 @@ public class WordNet {
             }
             i++;
         }
-        bufferedReader.close();
+        in.close();
+
+        //if is not a DAG throw exception
+        boolean isDAG = false;
+        for (int j = 0; j < num; j++) {
+            if (digraph.outdegree(j)==0){
+                if (!isDAG){
+                    //handle multiple roots situations
+                    isDAG=true;
+                }else {
+                    throw new IllegalArgumentException();
+                }
+            }
+        }
+        if (isDAG){
+            DirectedCycle cycle = new DirectedCycle(digraph);
+            if (cycle.hasCycle()){
+                isDAG = false;
+            }
+        }
+        if (!isDAG){
+            throw new IllegalArgumentException();
+        }
+
+        sap = new SAP(digraph);
     }
 
     public Iterable<String> nouns() {
         // returns all WordNet nouns
-        return hashMap.keySet();
+        return noun2id.keySet();
     }
 
     public boolean isNoun(String word) {
         // is the word a WordNet noun?
-        return hashMap.containsKey(word);
+        if (word==null){
+            throw new IllegalArgumentException();
+        }
+        return noun2id.containsKey(word);
     }
 
     public int distance(String nounA, String nounB) {
+        if (nounA==null||nounB==null){
+            throw new IllegalArgumentException();
+        }
         // distance between nounA and nounB (defined below)
-        return 0;
+        Iterable<Integer> a = noun2id.get(nounA);
+        Iterable<Integer> b = noun2id.get(nounB);
+        if (a==null||b==null){
+            throw new IllegalArgumentException();
+        }
+        return sap.length(a,b);
     }
 
     public String sap(String nounA, String nounB) {
         // a synset (second field of synsets.txt) that is the common ancestor of nounA and nounB
         // in a shortest ancestral path (defined below)
-        return null;
+        if (nounA==null||nounB==null){
+            throw new IllegalArgumentException();
+        }
+        Iterable<Integer> a = noun2id.get(nounA);
+        Iterable<Integer> b = noun2id.get(nounB);
+        if (a==null||b==null) {
+            throw new IllegalArgumentException();
+        }
+        int idx = sap.ancestor(a,b);
+        return id2noun.get(idx);
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args){
         // do unit testing of this class
         WordNet wordNet = new WordNet(
-                "./testFile/wordnet/synsets15.txt", "");
+                "./testFile/wordnet/synsets15.txt", "./testFile/wordnet/hypernyms15Tree.txt");
     }
 
 }
