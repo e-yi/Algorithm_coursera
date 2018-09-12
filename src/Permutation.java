@@ -1,8 +1,5 @@
-import edu.princeton.cs.algs4.ResizingArrayQueue;
 import edu.princeton.cs.algs4.StdIn;
 import edu.princeton.cs.algs4.StdOut;
-
-import java.util.NoSuchElementException;
 
 /**
  * Write a client program Permutation.java that takes an integer k as a command-line argument;

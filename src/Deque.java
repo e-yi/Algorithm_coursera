@@ -83,7 +83,7 @@ public class Deque<Item> implements Iterable<Item> {
         return node.item;
     }                 // remove and return the item from the end
 
-    class DequeIterator implements Iterator {
+    private class DequeIterator implements Iterator {
         private Node current;
 
         public DequeIterator(Node first) {
