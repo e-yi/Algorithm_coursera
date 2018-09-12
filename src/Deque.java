@@ -1,3 +1,5 @@
+import edu.princeton.cs.algs4.StdOut;
+
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -43,9 +45,9 @@ public class Deque<Item> implements Iterable<Item> {
         }
         Node node = new Node();
         node.item = item;
-        if (num==0){
-            first=node;
-            last=node;
+        if (num == 0) {
+            first = node;
+            last = node;
             num++;
             return;
         }
@@ -61,9 +63,9 @@ public class Deque<Item> implements Iterable<Item> {
         }
         Node node = new Node();
         node.item = item;
-        if (num==0){
-            first=node;
-            last=node;
+        if (num == 0) {
+            first = node;
+            last = node;
             num++;
             return;
         }
@@ -78,9 +80,10 @@ public class Deque<Item> implements Iterable<Item> {
             throw new NoSuchElementException();
         }
         Node node = first;
-        if (num==1){
-            first =null;
+        if (num == 1) {
+            first = null;
             last = null;
+            num--;
             return node.item;
         }
         first = node.back;
@@ -95,9 +98,10 @@ public class Deque<Item> implements Iterable<Item> {
         }
 
         Node node = last;
-        if (num==1){
-            first =null;
+        if (num == 1) {
+            first = null;
             last = null;
+            num--;
             return node.item;
         }
         last = node.front;
@@ -106,7 +110,7 @@ public class Deque<Item> implements Iterable<Item> {
         return node.item;
     }                 // remove and return the item from the end
 
-    private class DequeIterator implements Iterator {
+    private class DequeIterator implements Iterator<Item> {
         private Node current;
 
         public DequeIterator(Node first) {
@@ -119,11 +123,13 @@ public class Deque<Item> implements Iterable<Item> {
         }
 
         @Override
-        public Object next() {
+        public Item next() {
             if (!hasNext()) {
                 throw new NoSuchElementException();
             }
-            return current.back;
+            Item item = current.item;
+            current = current.back;
+            return item;
         }
 
         @Override
@@ -138,6 +144,11 @@ public class Deque<Item> implements Iterable<Item> {
     }         // return an iterator over items in order from front to end
 
     public static void main(String[] args) {
-
+        Deque<Integer> deque = new Deque<Integer>();
+        deque.addLast(1);
+        for (Integer i : deque
+                ) {
+            StdOut.print(i);
+        }
     }   // unit testing (optional)
 }
