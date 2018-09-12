@@ -91,16 +91,23 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         return new RandomizedQueueIterator(items,front);
     }
 
-    private class RandomizedQueueIterator  implements Iterator{
+    private class RandomizedQueueIterator  implements Iterator<Item>{
 
         private Item[] items;
         private final int front;
         private int current;
 
-        public RandomizedQueueIterator(Item[] items,int front) {
+        public RandomizedQueueIterator(Item[] itemArr,int front) {
             this.front=front;
-            this.items=items;
+            this.items=itemArr.clone();
             this.current=0;
+            for (int i = 0; i < front; i++) {
+                int n =StdRandom.uniform(front);
+                int m = StdRandom.uniform(front);
+                Item item = items[n];
+                items[n] = items[m];
+                items[m] = item;
+            }
         }
 
         @Override
@@ -109,11 +116,12 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         }
 
         @Override
-        public Object next() {
+        public Item next() {
             if (!hasNext()){
                 throw new NoSuchElementException();
             }
-            return items[current++];
+            Item item = items[current++];
+            return item!=null?item:next();
         }
 
         @Override
