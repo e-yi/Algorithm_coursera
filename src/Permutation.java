@@ -17,7 +17,7 @@ public class Permutation {
             queue.enqueue(s);
         }
         for (int i = 0; i < k; i++) {
-            StdOut.print(queue.dequeue()+'\n');
+            StdOut.print(queue.dequeue() + '\n');
         }
     }
 }
