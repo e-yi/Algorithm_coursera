@@ -82,6 +82,11 @@ public class SeamCarver {
     public int[] findHorizontalSeam() {
         // sequence of indices for horizontal seam
 
+        if (height==0){
+            //return 0,0,0,0,0,...
+            return new int[width];
+        }
+
         double[][] distTo = new double[height][width];
         int[][] pathTo = new int[height][width];
 
@@ -138,6 +143,12 @@ public class SeamCarver {
 
     public int[] findVerticalSeam() {
         // sequence of indices for vertical seam
+
+        if (width==0){
+            //return 0,0,0,0,0,...
+            return new int[height];
+        }
+
         double[][] distTo = new double[height][width];
         int[][] pathTo = new int[height][width];
 
@@ -227,7 +238,7 @@ public class SeamCarver {
             for(int i:d){
                 try{
                     updateEnergy(seam[col]+i,col);
-                }catch (ArrayIndexOutOfBoundsException ignore){
+                }catch (ArrayIndexOutOfBoundsException|IllegalArgumentException ignore){
                 }
             }
         }
