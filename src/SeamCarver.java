@@ -19,16 +19,16 @@ public class SeamCarver {
         this.height = picture.height();
         this.energyMap = new double[height][width];
         for (int i=0;i<width;i++){
-            energyMap[i][0] = 1000;
-            energyMap[i][height-1] = 1000;
+            energyMap[0][i] = 1000;
+            energyMap[height-1][i] = 1000;
         }
         for (int i=0;i<height;i++){
-            energyMap[0][i] = 1000;
-            energyMap[width-1][i] = 1000;
+            energyMap[i][0] = 1000;
+            energyMap[i][width-1] = 1000;
         }
-        for (int i = 1; i < width-1; i++) {
-            for (int j = 1; j < height-1; j++) {
-                updateEnergy(i,j);
+        for (int col = 1; col < width-1; col++) {
+            for (int row = 1; row < height-1; row++) {
+                updateEnergy(row,col);
             }
         }
     }
@@ -41,12 +41,12 @@ public class SeamCarver {
     }
 
     private double rgbDelta(int x1,int y1,int x2,int y2){
-        int rgb1 = picture.getRGB(x1,y1);
+        int rgb1 = picture.getRGB(y1,x1);
         int r1 = (rgb1 >> 16) & 0xFF;
         int g1 = (rgb1 >>  8) & 0xFF;
         int b1 = (rgb1 >>  0) & 0xFF;
 
-        int rgb2 = picture.getRGB(x2,y2);
+        int rgb2 = picture.getRGB(y2,x2);
         int r2 = (rgb2 >> 16) & 0xFF;
         int g2 = (rgb2 >>  8) & 0xFF;
         int b2 = (rgb2 >>  0) & 0xFF;
@@ -138,8 +138,8 @@ public class SeamCarver {
 
     public int[] findVerticalSeam() {
         // sequence of indices for vertical seam
-        double[][] distTo = new double[width][height];
-        int[][] pathTo = new int[width][height];
+        double[][] distTo = new double[height][width];
+        int[][] pathTo = new int[height][width];
 
         for (int col = 0; col < width; col++) {
             distTo[0][col] = energyMap[0][col];
@@ -206,14 +206,13 @@ public class SeamCarver {
                 rgb[row][col] = picture.getRGB(col,row);
             }
         }
-        int[] path = findHorizontalSeam();
 
         Picture newPicture = new Picture(width,height-1);
 
         for (int col = 0; col < width; col++) {
             int d = 0;
             for (int row = 0; row < height; row++) {
-                if (row==path[col]){
+                if (row== seam[col]){
                     d = -1;
                     continue;
                 }
@@ -227,7 +226,7 @@ public class SeamCarver {
         for (int col = 0; col < width; col++) {
             for(int i:d){
                 try{
-                    updateEnergy(path[col]+i,col);
+                    updateEnergy(seam[col]+i,col);
                 }catch (ArrayIndexOutOfBoundsException ignore){
                 }
             }
@@ -248,18 +247,17 @@ public class SeamCarver {
                 rgb[row][col] = picture.getRGB(col,row);
             }
         }
-        int[] path = findVerticalSeam();
 
         Picture newPicture = new Picture(width-1,height);
 
         for (int row = 0; row < height; row++) {
             int d = 0;
             for (int col = 0; col < width; col++) {
-                if (col==path[row]){
+                if (col== seam[row]){
                     d = -1;
                     continue;
                 }
-                newPicture.setRGB(col+d,row,rgb[col][row]);
+                newPicture.setRGB(col+d,row,rgb[row][col]);
             }
         }
         this.picture = newPicture;
@@ -269,8 +267,8 @@ public class SeamCarver {
         for (int row = 0; row < height; row++) {
             for(int i:d){
                 try{
-                    updateEnergy(row,path[row]+i);
-                }catch (ArrayIndexOutOfBoundsException ignore){
+                    updateEnergy(row, seam[row]+i);
+                }catch (ArrayIndexOutOfBoundsException|IllegalArgumentException ignore){
                 }
             }
         }
@@ -280,6 +278,15 @@ public class SeamCarver {
         if (row<0||row>height-1||col<0||col>width-1){
             throw new IllegalArgumentException();
         }
+    }
+
+    public static void main(String[] args){
+        Picture p = new Picture("./testFile/seam/4x6.png");
+        SeamCarver seamCarver = new SeamCarver(p);
+        seamCarver.findHorizontalSeam();
+        seamCarver.removeVerticalSeam(seamCarver.findVerticalSeam());
+        Picture p2 = seamCarver.picture;
+        p2.show();
     }
 }
 
