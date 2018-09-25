@@ -82,7 +82,7 @@ public class SeamCarver {
     public int[] findHorizontalSeam() {
         // sequence of indices for horizontal seam
 
-        if (height==0){
+        if (height==1){
             //return 0,0,0,0,0,...
             return new int[width];
         }
@@ -144,7 +144,7 @@ public class SeamCarver {
     public int[] findVerticalSeam() {
         // sequence of indices for vertical seam
 
-        if (width==0){
+        if (width==1){
             //return 0,0,0,0,0,...
             return new int[height];
         }
@@ -292,10 +292,18 @@ public class SeamCarver {
     }
 
     public static void main(String[] args){
-        Picture p = new Picture("./testFile/seam/4x6.png");
+        String fileName = "chameleon.png";
+        Picture p = new Picture("./testFile/seam/"+fileName);
         SeamCarver seamCarver = new SeamCarver(p);
         seamCarver.findHorizontalSeam();
-        seamCarver.removeVerticalSeam(seamCarver.findVerticalSeam());
+        int removeVertical = 200;
+        for (int i = 0; i < removeVertical; i++) {
+            seamCarver.removeVerticalSeam(seamCarver.findVerticalSeam());
+        }
+        int removeHizontal = 000;
+        for (int i = 0; i < removeHizontal; i++) {
+            seamCarver.removeHorizontalSeam(seamCarver.findHorizontalSeam());
+        }
         Picture p2 = seamCarver.picture;
         p2.show();
     }
