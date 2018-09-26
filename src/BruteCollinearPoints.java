@@ -1,7 +1,6 @@
-import edu.princeton.cs.algs4.Quick;
-import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.StdRandom;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 
 public class BruteCollinearPoints {
@@ -19,7 +18,15 @@ public class BruteCollinearPoints {
             }
         }
 
-        Quick.sort(points);
+        Arrays.sort(points);
+        Point p = null;
+        for(Point point:points){
+            if (point==p){
+                throw new IllegalArgumentException();
+            }
+            p=point;
+        }
+
         //StdOut.println(java.util.Arrays.toString(points));
         int len = points.length;
         for (int i = 0; i < len; i++) {
