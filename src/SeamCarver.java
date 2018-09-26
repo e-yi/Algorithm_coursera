@@ -75,7 +75,7 @@ public class SeamCarver {
 
     public double energy(int x, int y) {
         // energy of pixel at column x and row y
-        valideInput(y,x);
+        validateInput(y,x);
         return energyMap[y][x];
     }
 
@@ -208,8 +208,13 @@ public class SeamCarver {
         if (seam==null||seam.length!=width||height<=1){
             throw new IllegalArgumentException();
         }
+        int last=-1;
         for (int i: seam) {
-            valideInput(i,0);
+            if (last!=-1&&Math.abs(last-i)>1){
+                throw new IllegalArgumentException();
+            }
+            last=i;
+            validateInput(i,0);
         }
         int[][] rgb = new int[height][width];
         for (int row = 0; row < height; row++) {
@@ -221,6 +226,7 @@ public class SeamCarver {
         Picture newPicture = new Picture(width,height-1);
 
         for (int col = 0; col < width; col++) {
+            //a little trick to skip the deleted pixel
             int d = 0;
             for (int row = 0; row < height; row++) {
                 if (row== seam[col]){
@@ -249,8 +255,13 @@ public class SeamCarver {
         if (seam==null||seam.length!=height||width<=1){
             throw new IllegalArgumentException();
         }
+        int last=-1;
         for (int i: seam) {
-            valideInput(0,i);
+            if (last!=-1&&Math.abs(last-i)>1){
+                throw new IllegalArgumentException();
+            }
+            last=i;
+            validateInput(0,i);
         }
         int[][] rgb = new int[height][width];
         for (int row = 0; row < height; row++) {
@@ -285,7 +296,7 @@ public class SeamCarver {
         }
     }
 
-    private void valideInput(int row,int col){
+    private void validateInput(int row, int col){
         if (row<0||row>height-1||col<0||col>width-1){
             throw new IllegalArgumentException();
         }
