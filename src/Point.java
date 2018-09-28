@@ -105,10 +105,9 @@ public class Point implements Comparable<Point> {
             double slope1 = this.slopeTo(o1);
             double slope2 = this.slopeTo(o2);
 
-            double slope = slope1-slope2;
-            if (slope == 0) {
+            if (slope1==slope2) {
                 return 0;
-            } else if (slope > 0) {
+            } else if (slope1 > slope2) {
                 return 1;
             } else {
                 return -1;
@@ -136,6 +135,9 @@ public class Point implements Comparable<Point> {
      */
     public static void main(String[] args) {
         /* YOUR CODE HERE */
-
+        Point p = new Point(4,1);
+        Point q = new Point(4,5);
+        Point r = new Point(4,6);
+        System.out.println(p.slopeOrder().compare(q,r));
     }
 }

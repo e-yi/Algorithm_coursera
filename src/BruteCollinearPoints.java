@@ -18,10 +18,11 @@ public class BruteCollinearPoints {
             }
         }
 
+        points = points.clone();
         Arrays.sort(points);
         Point p = null;
         for(Point point:points){
-            if (point==p){
+            if (point.equals(p)){
                 throw new IllegalArgumentException();
             }
             p=point;
