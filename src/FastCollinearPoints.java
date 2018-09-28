@@ -28,8 +28,10 @@ public class FastCollinearPoints {
                 throw new IllegalArgumentException();
             }
         }
-
         points = points.clone();
+        for (int i = 0; i < points.length; i++) {
+
+        }
         Arrays.sort(points);
 
         Point p = null;
