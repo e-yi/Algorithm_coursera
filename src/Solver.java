@@ -1,5 +1,7 @@
 import edu.princeton.cs.algs4.MinPQ;
 import edu.princeton.cs.algs4.Stack;
+import edu.princeton.cs.algs4.In;
+import edu.princeton.cs.algs4.StdOut;
 
 public class Solver {
 
@@ -11,12 +13,25 @@ public class Solver {
 
     public Solver(Board initial) {
         // find a solution to the initial board (using the A* algorithm)
+        if (initial == null) {
+            throw new IllegalArgumentException();
+        }
+
+        solution=new Stack<>();
+        if (initial.isGoal()){
+            solution.push(initial);
+            moves=0;
+            isSolvable=true;
+        }
+
         minPQ = new MinPQ<>();
         Node init = new Node(null, initial, 0);
         minPQ.insert(init);
         twinMinPQ = new MinPQ<>();
         Node twinInit = new Node(null, init.board.twin(), 0);
         twinMinPQ.insert(twinInit);
+
+
 
         while (true) {
             Node goal = step(minPQ);
@@ -42,14 +57,15 @@ public class Solver {
             //or should I throw an exception?
         }
         Node node = queue.delMin();
+        if (node.board.isGoal()){
+            return node;
+        }
+
         for (Board neighbor : node.board.neighbors()) {
-            Node neighborNode = new Node(node, neighbor, node.dis + 1);
-            if (neighbor == node.pre.board) {
+            if (node.pre!=null && neighbor.equals(node.pre.board)){
                 continue;
             }
-            if (neighbor.isGoal()) {
-                return neighborNode;
-            }
+            Node neighborNode = new Node(node, neighbor, node.dis + 1);
             queue.insert(neighborNode);
         }
         return null;

@@ -1,5 +1,3 @@
-import edu.princeton.cs.algs4.StdOut;
-
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -10,8 +8,8 @@ public class Board {
     private int hamming;
     private int manhattan;
     private boolean isGoal;
-    private int x_blank;
-    private int y_blank;
+    private int blankX;
+    private int blankY;
     private int dis;
 
     public Board(int[][] blocks){
@@ -45,8 +43,8 @@ public class Board {
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 if (blocks[i][j]==0){
-                    x_blank=i;
-                    y_blank=j;
+                    blankX =i;
+                    blankY =j;
                     continue;
                 }
                 if (blocks[i][j]!=i*n+j+1){
@@ -96,7 +94,7 @@ public class Board {
     public Board twin(){
         // a board that is obtained by exchanging any pair of blocks
         int[][] newBlocks = clone2d(blocks);
-        int row = x_blank==0?1:0;
+        int row = blankX ==0?1:0;
         int temp;
         temp=newBlocks[row][0];
         newBlocks[row][0]=newBlocks[row][1];
@@ -135,14 +133,14 @@ public class Board {
 
             {
                 //init
-                if (x_blank==n-1){
+                if (blankX ==n-1){
                     dir[3]=true;
-                }else if (x_blank==0){
+                }else if (blankX ==0){
                     dir[2]=true;
                 }
-                if (y_blank==n-1){
+                if (blankY ==n-1){
                     dir[1]=true;
-                }else if (y_blank==0){
+                }else if (blankY ==0){
                     dir[0]=true;
                 }
             }
@@ -168,23 +166,23 @@ public class Board {
                         switch (i){
                             case 0:
                                 //up
-                                targetX = x_blank;
-                                targetY = y_blank-1;
+                                targetX = blankX;
+                                targetY = blankY -1;
                                 break;
                             case 1:
                                 //down
-                                targetX=x_blank;
-                                targetY=y_blank+1;
+                                targetX= blankX;
+                                targetY= blankY +1;
                                 break;
                             case 2:
                                 //left
-                                targetX=x_blank-1;
-                                targetY=y_blank;
+                                targetX= blankX -1;
+                                targetY= blankY;
                                 break;
                             case 3:
                                 //right
-                                targetX=x_blank+1;
-                                targetY=y_blank;
+                                targetX= blankX +1;
+                                targetY= blankY;
                                 break;
                             default:
                                 targetX=-1;
@@ -195,10 +193,10 @@ public class Board {
                         int row = (target-1) / n;
                         int col = (target-1) % n;
                         int manhattanBefore = Math.abs(row-targetX) + Math.abs(col-targetY);
-                        int manhattanAfter = Math.abs(row-x_blank) + Math.abs(col-y_blank);
+                        int manhattanAfter = Math.abs(row- blankX) + Math.abs(col- blankY);
                         int m = manhattan-manhattanBefore+manhattanAfter;
 
-                        myBlocks[x_blank][y_blank]=target;
+                        myBlocks[blankX][blankY]=target;
                         myBlocks[targetX][targetY]=0;
                         return new Board(myBlocks,m,dis+1);
                     }
@@ -230,7 +228,6 @@ public class Board {
         }
         return newArray;
     }
-
 
     public static void main(String[] args){
         // unit tests (not graded)
