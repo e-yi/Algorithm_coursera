@@ -22,6 +22,7 @@ public class Solver {
             solution.push(initial);
             moves=0;
             isSolvable=true;
+            return;
         }
 
         minPQ = new MinPQ<>();
