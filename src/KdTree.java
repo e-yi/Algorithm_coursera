@@ -11,7 +11,7 @@ public class KdTree {
     private int size;
 
     private static class Node {
-        private Point2D point;
+        private final Point2D point;
         private Node big;
         private Node small;
 
@@ -310,16 +310,16 @@ public class KdTree {
     }
 
     private Point2D subTreeNearest(Node node,Point2D target,RectHV space, boolean isHorizontal){
-        Point2D nearestPoint = new Point2D(Double.POSITIVE_INFINITY,Double.POSITIVE_INFINITY);
+        Point2D nearestPoint = node.point;
 
         SplitSpace splitSpace = new SplitSpace(node,space,isHorizontal);
 
-        if (node.big!=null){
+        if (node.big!=null && splitSpace.rightOrUp.contains(target)){
             Point2D nearestPointOfBig = subTreeNearest(node.big,target,splitSpace.rightOrUp,!isHorizontal);
             nearestPoint = target.distanceSquaredTo(nearestPoint)<=target.distanceSquaredTo(nearestPointOfBig)?
                     nearestPoint:nearestPointOfBig;
         }
-        if (node.small!=null){
+        if (node.small!=null && splitSpace.leftOrDown.contains(target)){
             Point2D nearestPointOfSmall = subTreeNearest(node.small,target,splitSpace.leftOrDown,!isHorizontal);
             nearestPoint = target.distanceSquaredTo(nearestPoint)<=target.distanceSquaredTo(nearestPointOfSmall)?
                     nearestPoint:nearestPointOfSmall;
@@ -334,7 +334,7 @@ public class KdTree {
         RectHV rect0 = new RectHV(0.0, 0.0, 1.0, 1.0);
         StdDraw.enableDoubleBuffering();
         KdTree kdtree = new KdTree();
-        final int NUM_POINT = 10;
+        final int NUM_POINT = 5;
         while (true){
             if (StdDraw.isMousePressed()) {
                 double x = StdDraw.mouseX();
