@@ -225,72 +225,30 @@ public class KdTree {
             return new Bag<>();
         }
 
-        //BFS
-        Stack<Node> stack = new Stack<>();
+        RectHV full = new RectHV(0,0,1,1);
+        return range(rect,full,root,false);
+    }
+
+    private Bag<Point2D> range(RectHV rect,RectHV space,Node node,boolean isHorizontal){
         Bag<Point2D> pointBag = new Bag<>();
-        boolean isHorizontal = false;
 
-        stack.push(root);
-        while (!stack.isEmpty()){
-            Node node = stack.pop();
-            Point2D point = node.point;
+        if (rect.contains(node.point)){
+            pointBag.add(node.point);
+        }
 
-            int relativePosition = inRect(point,rect,isHorizontal);
-
-            if (relativePosition==0){
-                if (inRect(point,rect,!isHorizontal)==0){
-                    pointBag.add(point);
-                }
-                if (node.big != null) {
-                    stack.push(node.big);
-                }
-                if (node.small !=null){
-                    stack.push(node.small);
-                }
-            }else if (relativePosition<0){
-                //point<rect
-                if (node.big != null) {
-                    stack.push(node.big);
-                }
-            }else {
-                if (node.small !=null){
-                    stack.push(node.small);
-                }
+        SplitSpace splitSpace = new SplitSpace(node,space,isHorizontal);
+        if (node.big!=null && splitSpace.rightOrUp.intersects(rect)) {
+            for (Point2D point2D : range(rect, splitSpace.rightOrUp, node.big, !isHorizontal)) {
+                pointBag.add(point2D);
             }
-
-            isHorizontal = !isHorizontal;
+        }
+        if (node.small!=null && splitSpace.leftOrDown.intersects(rect)){
+            for (Point2D point2D:range(rect,splitSpace.leftOrDown,node.small,!isHorizontal)){
+                pointBag.add(point2D);
+            }
         }
 
         return pointBag;
-    }
-
-    /**
-     * just like `compare`
-     * @param point
-     * @param rect
-     * @param testY
-     * @return
-     */
-    private int inRect(Point2D point, RectHV rect, boolean testY){
-        if (testY) {
-            double y = point.y();
-            if (y>rect.ymax()){
-                return 1;
-            }
-            if (y<rect.ymin()){
-                return -1;
-            }
-            return 0;
-        }else {
-            double x = point.x();
-            if (x > rect.xmax()) {
-                return 1;
-            }
-            if (x < rect.xmin()) {
-                return -1;
-            }
-            return 0;
-        }
     }
 
     public Point2D nearest(Point2D p) {
