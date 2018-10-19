@@ -42,8 +42,6 @@ public class PointSET {
 
     public void draw() {
         // draw all points to standard draw
-        StdDraw.setPenColor(StdDraw.BLACK);
-        StdDraw.setPenRadius(0.01);
         for (Point2D p: set) {
             p.draw();
         }
