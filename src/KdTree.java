@@ -252,6 +252,17 @@ public class KdTree {
     }
 
     public Point2D nearest(Point2D p) {
+        class NodeV2{
+            Node node;
+            RectHV rectHV;
+            boolean isHorizontal;
+            NodeV2(Node node,RectHV rectHV,boolean isHorizontal){
+                this.node=node;
+                this.rectHV=rectHV;
+                this.isHorizontal = isHorizontal;
+            }
+        }
+
         // a nearest neighbor in the set to point p; null if the set is empty
         if (p == null) {
             throw new IllegalArgumentException();
@@ -263,28 +274,61 @@ public class KdTree {
             return root.point;
         }
 
+        Stack<NodeV2> stack = new Stack<>();
+        Point2D nearsetPoint = root.point;
+        double minDistance = root.point.distanceSquaredTo(p);
         RectHV full = new RectHV(0,0,1,1);
-        return subTreeNearest(root,p,full,false);
-    }
-
-    private Point2D subTreeNearest(Node node,Point2D target,RectHV space, boolean isHorizontal){
-        Point2D nearestPoint = node.point;
-
-        SplitSpace splitSpace = new SplitSpace(node,space,isHorizontal);
-
-        if (node.big!=null && splitSpace.rightOrUp.contains(target)){
-            Point2D nearestPointOfBig = subTreeNearest(node.big,target,splitSpace.rightOrUp,!isHorizontal);
-            nearestPoint = target.distanceSquaredTo(nearestPoint)<=target.distanceSquaredTo(nearestPointOfBig)?
-                    nearestPoint:nearestPointOfBig;
+        stack.push(new NodeV2(root,full,false));
+        while (!stack.isEmpty()) {
+            NodeV2 nodeV2 = stack.pop();
+            double distance = nodeV2.node.point.distanceSquaredTo(p);
+            if (distance < minDistance) {
+                nearsetPoint = nodeV2.node.point;
+                minDistance = distance;
+            } else if (nodeV2.rectHV.distanceSquaredTo(p) > minDistance) {
+                continue;
+            }
+            SplitSpace splitSpace = new SplitSpace(nodeV2.node, nodeV2.rectHV, nodeV2.isHorizontal);
+            if (nodeV2.node.big != null) {
+                stack.push(new NodeV2(nodeV2.node.big, splitSpace.rightOrUp, !nodeV2.isHorizontal));
+            }
+            if (nodeV2.node.small != null) {
+                stack.push(new NodeV2(nodeV2.node.small, splitSpace.leftOrDown, !nodeV2.isHorizontal));
+            }
         }
-        if (node.small!=null && splitSpace.leftOrDown.contains(target)){
-            Point2D nearestPointOfSmall = subTreeNearest(node.small,target,splitSpace.leftOrDown,!isHorizontal);
-            nearestPoint = target.distanceSquaredTo(nearestPoint)<=target.distanceSquaredTo(nearestPointOfSmall)?
-                    nearestPoint:nearestPointOfSmall;
-        }
-
-        return nearestPoint;
+        return nearsetPoint;
     }
+//
+//    private static class NearestPoint{
+//        private static Point2D nearestPoint;
+//        private NearestPoint(){}
+//        static Point2D get(){
+//
+//            return nearestPoint;
+//        }
+//
+//        private Point2D subTreeNearest(Node node,Point2D target,RectHV space, boolean isHorizontal){
+//            Point2D nearestPoint = node.point;
+//            double distance = target.distanceSquaredTo(nearestPoint);
+//
+//            SplitSpace splitSpace = new SplitSpace(node,space,isHorizontal);
+//
+//            if (node.big!=null && splitSpace.rightOrUp.contains(target)){
+//                Point2D nearestPointOfBig = subTreeNearest(node.big,target,splitSpace.rightOrUp,!isHorizontal);
+//                nearestPoint = distance<=target.distanceSquaredTo(nearestPointOfBig)?
+//                        nearestPoint:nearestPointOfBig;
+//            }
+//
+//            if (node.small!=null && splitSpace.leftOrDown.contains(target)){
+//                Point2D nearestPointOfSmall = subTreeNearest(node.small,target,splitSpace.leftOrDown,!isHorizontal);
+//                nearestPoint = distance<=target.distanceSquaredTo(nearestPointOfSmall)?
+//                        nearestPoint:nearestPointOfSmall;
+//            }
+//
+//            return nearestPoint;
+//        }
+//
+//    }
 
 
     public static void main(String[] args) {
