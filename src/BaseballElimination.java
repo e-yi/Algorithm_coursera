@@ -83,6 +83,14 @@ public class BaseballElimination {
         return fordFulkerson;
     }
 
+    private void checkPara(String... teams){
+        for (String team : teams){
+            if (!this.teams.contains(team)){
+                throw new IllegalArgumentException("team not correct");
+            }
+        }
+    }
+
     public int numberOfTeams(){
         // number of teams
         return num;
@@ -95,26 +103,31 @@ public class BaseballElimination {
 
     public int wins(String team){
         // number of wins for given team
+        checkPara(team);
         return w[teams.indexOf(team)];
     }
 
     public int losses(String team){
         // number of losses for given team
+        checkPara(team);
         return l[teams.indexOf(team)];
     }
 
     public int remaining(String team){
         // number of remaining games for given team
+        checkPara(team);
         return r[teams.indexOf(team)];
     }
 
     public int against(String team1, String team2){
         // number of remaining games between team1 and team2
+        checkPara(team1,team2);
         return g[teams.indexOf(team1)][teams.indexOf(team2)];
     }
 
     public boolean isEliminated(String team){
         // is given team eliminated?
+        checkPara(team);
         int idx = teams.indexOf(team);
         if (r[idx]+w[idx]<IntStream.of(w).max().orElse(0)){
 //            System.out.println("simple eliminate");
@@ -126,6 +139,7 @@ public class BaseballElimination {
 
     public Iterable<String> certificateOfElimination(String team){
         // subset R of teams that eliminates given team; null if not eliminated
+        checkPara(team);
         int idx = teams.indexOf(team);
         int max = r[idx]+w[idx];
         for (int i = 0; i < num; i++) {
