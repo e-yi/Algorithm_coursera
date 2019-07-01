@@ -44,24 +44,6 @@ public class BoggleSolver {
             return x;
         }
 
-        Node get(String key){
-            return get(root, key,0);
-        }
-
-        Node get(Node x, String key, int d){
-            if (x==null){
-                return null;
-            }
-
-            if (d==key.length()){
-                return x;
-            }
-
-            int c = key.charAt(d)-'A';
-
-            return get(x.next[c],key,d+1);
-        }
-
     }
 
 
@@ -91,7 +73,7 @@ public class BoggleSolver {
 
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < col; j++) {
-                dfsBoard(i,j,"",path,validWords,board);
+                dfsBoard(i,j,"",path,validWords,board,trieST.root);
             }
         }
 
@@ -107,7 +89,8 @@ public class BoggleSolver {
      * @param board
      */
     private void dfsBoard(int i, int j, String prefix, boolean[] path,
-                          Set<String> set, BoggleBoard board){
+                          Set<String> set, BoggleBoard board,
+                          MyTrieST.Node lastNode){
         // 合法性检查
         if (i<0||j<0||i>=board.rows()||j>=board.cols()){
             return;
@@ -123,14 +106,17 @@ public class BoggleSolver {
             tail = tail.concat("U");
         }
 
-        String s = prefix.concat(tail);
+        MyTrieST.Node temp = lastNode;
+        for(char c : tail.toCharArray()){
+            temp = temp.next[c-'A'];
 
-        MyTrieST.Node temp = trieST.get(s);
-
-        // 检查是否有希望
-        if (temp==null){
-            return;
+            // 检查是否有希望
+            if (temp==null){
+                return;
+            }
         }
+
+        String s = prefix.concat(tail);
 
         // 检查是否成功
         if (temp.endOfWord && s.length()>2){
@@ -142,7 +128,7 @@ public class BoggleSolver {
 
         for (int k = -1; k < 2; k++) {
             for (int l = -1; l < 2; l++) {
-                dfsBoard(i+k,j+l,s,myPath,set,board);
+                dfsBoard(i+k,j+l,s,myPath,set,board,temp);
             }
         }
     }
