@@ -41,7 +41,7 @@ public class PointSET {
 
     public void draw() {
         // draw all points to standard draw
-        for (Point2D p: set) {
+        for (Point2D p : set) {
             p.draw();
         }
     }
@@ -52,8 +52,8 @@ public class PointSET {
             throw new IllegalArgumentException();
         }
         Bag<Point2D> bag = new Bag<>();
-        for (Point2D p : set){
-            if (rect.contains(p)){
+        for (Point2D p : set) {
+            if (rect.contains(p)) {
                 bag.add(p);
             }
         }
@@ -67,9 +67,9 @@ public class PointSET {
         }
         Point2D nearestP = null;
         double minDistance = Double.POSITIVE_INFINITY;
-        for (Point2D point:set){
+        for (Point2D point : set) {
             double distance = p.distanceSquaredTo(point);
-            if (distance<minDistance){
+            if (distance < minDistance) {
                 nearestP = point;
                 minDistance = distance;
             }
@@ -80,8 +80,8 @@ public class PointSET {
     public static void main(String[] args) {
         // unit testing of the methods (optional)
         PointSET pointSET = new PointSET();
-        pointSET.insert(new Point2D(0.5,0.5));
-        pointSET.insert(new Point2D(0.1,0.1));
+        pointSET.insert(new Point2D(0.5, 0.5));
+        pointSET.insert(new Point2D(0.1, 0.1));
         pointSET.draw();
     }
 }

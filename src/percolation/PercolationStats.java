@@ -12,7 +12,7 @@ public class PercolationStats {
     private double confidenceHi;
 
     public PercolationStats(int n, int trials) {
-        if (n<=0||trials<=0){
+        if (n <= 0 || trials <= 0) {
             throw new IllegalArgumentException();
         }
         this.n = n;

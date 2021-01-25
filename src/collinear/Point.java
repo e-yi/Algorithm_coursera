@@ -8,8 +8,9 @@
  *
  ******************************************************************************/
 
-import java.util.Comparator;
 import edu.princeton.cs.algs4.StdDraw;
+
+import java.util.Comparator;
 
 public class Point implements Comparable<Point> {
 
@@ -19,8 +20,8 @@ public class Point implements Comparable<Point> {
     /**
      * Initializes a new point.
      *
-     * @param  x the <em>x</em>-coordinate of the point
-     * @param  y the <em>y</em>-coordinate of the point
+     * @param x the <em>x</em>-coordinate of the point
+     * @param y the <em>y</em>-coordinate of the point
      */
     public Point(int x, int y) {
         /* DO NOT MODIFY */
@@ -55,20 +56,20 @@ public class Point implements Comparable<Point> {
      * Double.POSITIVE_INFINITY if the line segment is vertical;
      * and Double.NEGATIVE_INFINITY if (x0, y0) and (x1, y1) are equal.
      *
-     * @param  that the other point
+     * @param that the other point
      * @return the slope between this point and the specified point
      */
     public double slopeTo(Point that) {
-        if (that.x==this.x){
-            if (that.y==this.y){
+        if (that.x == this.x) {
+            if (that.y == this.y) {
                 return Double.NEGATIVE_INFINITY;
             }
             return Double.POSITIVE_INFINITY;
         }
-        if (that.y==this.y){
+        if (that.y == this.y) {
             return +.0;
         }
-        double slope =(double)(that.y-this.y)/(that.x-this.x);
+        double slope = (double) (that.y - this.y) / (that.x - this.x);
         return slope;
     }
 
@@ -77,20 +78,20 @@ public class Point implements Comparable<Point> {
      * Formally, the invoking point (x0, y0) is less than the argument point
      * (x1, y1) if and only if either y0 < y1 or if y0 = y1 and x0 < x1.
      *
-     * @param  that the other point
+     * @param that the other point
      * @return the value <tt>0</tt> if this point is equal to the argument
-     *         point (x0 = x1 and y0 = y1);
-     *         a negative integer if this point is less than the argument
-     *         point; and a positive integer if this point is greater than the
-     *         argument point
+     * point (x0 = x1 and y0 = y1);
+     * a negative integer if this point is less than the argument
+     * point; and a positive integer if this point is greater than the
+     * argument point
      */
     @Override
     public int compareTo(Point that) {
         /* YOUR CODE HERE */
-        if (this.y==that.y){
-            return this.x-that.x;
+        if (this.y == that.y) {
+            return this.x - that.x;
         }
-        return this.y-that.y;
+        return this.y - that.y;
     }
 
     /**
@@ -105,7 +106,7 @@ public class Point implements Comparable<Point> {
             double slope1 = this.slopeTo(o1);
             double slope2 = this.slopeTo(o2);
 
-            if (slope1==slope2) {
+            if (slope1 == slope2) {
                 return 0;
             } else if (slope1 > slope2) {
                 return 1;
@@ -135,9 +136,9 @@ public class Point implements Comparable<Point> {
      */
     public static void main(String[] args) {
         /* YOUR CODE HERE */
-        Point p = new Point(4,1);
-        Point q = new Point(4,5);
-        Point r = new Point(4,6);
-        System.out.println(p.slopeOrder().compare(q,r));
+        Point p = new Point(4, 1);
+        Point q = new Point(4, 5);
+        Point r = new Point(4, 6);
+        System.out.println(p.slopeOrder().compare(q, r));
     }
 }

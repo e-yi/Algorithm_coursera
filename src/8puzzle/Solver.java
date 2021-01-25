@@ -1,6 +1,6 @@
+import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.MinPQ;
 import edu.princeton.cs.algs4.Stack;
-import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.StdOut;
 
 public class Solver {
@@ -17,11 +17,11 @@ public class Solver {
             throw new IllegalArgumentException();
         }
 
-        solution=new Stack<>();
-        if (initial.isGoal()){
+        solution = new Stack<>();
+        if (initial.isGoal()) {
             solution.push(initial);
-            moves=0;
-            isSolvable=true;
+            moves = 0;
+            isSolvable = true;
             return;
         }
 
@@ -31,7 +31,6 @@ public class Solver {
         twinMinPQ = new MinPQ<>();
         Node twinInit = new Node(null, init.board.twin(), 0);
         twinMinPQ.insert(twinInit);
-
 
 
         while (true) {
@@ -58,12 +57,12 @@ public class Solver {
             //or should I throw an exception?
         }
         Node node = queue.delMin();
-        if (node.board.isGoal()){
+        if (node.board.isGoal()) {
             return node;
         }
 
         for (Board neighbor : node.board.neighbors()) {
-            if (node.pre!=null && neighbor.equals(node.pre.board)){
+            if (node.pre != null && neighbor.equals(node.pre.board)) {
                 continue;
             }
             Node neighborNode = new Node(node, neighbor, node.dis + 1);

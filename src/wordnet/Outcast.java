@@ -3,23 +3,24 @@ import edu.princeton.cs.algs4.StdOut;
 
 public class Outcast {
     private WordNet net;
-    public Outcast(WordNet wordnet){
+
+    public Outcast(WordNet wordnet) {
         // constructor takes a WordNet object
         net = wordnet;
     }
 
-    public String outcast(String[] nouns){
+    public String outcast(String[] nouns) {
         // given an array of WordNet nouns, return an outcast
         int[] dis = new int[nouns.length];
-        for (int i = 0; i <nouns.length; i++) {
+        for (int i = 0; i < nouns.length; i++) {
             for (int j = 0; j < nouns.length; j++) {
-                dis[i] += net.distance(nouns[i],nouns[j]);
+                dis[i] += net.distance(nouns[i], nouns[j]);
             }
         }
-        int out =-1;
+        int out = -1;
         int maxDis = Integer.MIN_VALUE;
         for (int i = 0; i < nouns.length; i++) {
-            if (dis[i]>maxDis){
+            if (dis[i] > maxDis) {
                 maxDis = dis[i];
                 out = i;
             }

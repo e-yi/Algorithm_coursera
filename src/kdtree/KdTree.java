@@ -1,9 +1,6 @@
-import edu.princeton.cs.algs4.Bag;
-import edu.princeton.cs.algs4.Point2D;
-import edu.princeton.cs.algs4.RectHV;
-import edu.princeton.cs.algs4.Stack;
 import edu.princeton.cs.algs4.StdDraw;
 import edu.princeton.cs.algs4.StdOut;
+import edu.princeton.cs.algs4.*;
 
 public class KdTree {
 
@@ -28,21 +25,21 @@ public class KdTree {
         }
     }
 
-    private static class SplitSpace{
+    private static class SplitSpace {
         private final RectHV rightOrUp;
         private final RectHV leftOrDown;
 
-        SplitSpace(Node node,RectHV space, boolean isHorizontal){
-            if (isHorizontal){
+        SplitSpace(Node node, RectHV space, boolean isHorizontal) {
+            if (isHorizontal) {
                 // up (y axis going upwards
-                rightOrUp = new RectHV(space.xmin(),node.point.y(),space.xmax(),space.ymax());
+                rightOrUp = new RectHV(space.xmin(), node.point.y(), space.xmax(), space.ymax());
                 //down
-                leftOrDown = new RectHV(space.xmin(),space.ymin(),space.xmax(),node.point.y());
-            }else{
+                leftOrDown = new RectHV(space.xmin(), space.ymin(), space.xmax(), node.point.y());
+            } else {
                 // right
-                rightOrUp = new RectHV(node.point.x(),space.ymin(),space.xmax(),space.ymax());
+                rightOrUp = new RectHV(node.point.x(), space.ymin(), space.xmax(), space.ymax());
                 // left
-                leftOrDown = new RectHV(space.xmin(),space.ymin(),node.point.x(),space.ymax());
+                leftOrDown = new RectHV(space.xmin(), space.ymin(), node.point.x(), space.ymax());
             }
         }
     }
@@ -191,28 +188,28 @@ public class KdTree {
         node.point.draw();
 
         //draw line
-        StdDraw.setPenColor(isHorizontal?StdDraw.BLUE:StdDraw.RED);
+        StdDraw.setPenColor(isHorizontal ? StdDraw.BLUE : StdDraw.RED);
         StdDraw.setPenRadius();
-        double x1,x2,y1,y2;
-        if (isHorizontal){
+        double x1, x2, y1, y2;
+        if (isHorizontal) {
             y1 = y2 = node.point.y();
             x1 = space.xmin();
             x2 = space.xmax();
-        }else{
+        } else {
             y1 = space.ymin();
             y2 = space.ymax();
             x1 = x2 = node.point.x();
         }
-        StdDraw.line(x1,y1,x2,y2);
+        StdDraw.line(x1, y1, x2, y2);
 
-        SplitSpace splitSpace = new SplitSpace(node,space,isHorizontal);
+        SplitSpace splitSpace = new SplitSpace(node, space, isHorizontal);
 
         //next
-        if (node.big != null){
-            draw(node.big,!isHorizontal,splitSpace.rightOrUp);
+        if (node.big != null) {
+            draw(node.big, !isHorizontal, splitSpace.rightOrUp);
         }
-        if (node.small != null){
-            draw(node.small,!isHorizontal,splitSpace.leftOrDown);
+        if (node.small != null) {
+            draw(node.small, !isHorizontal, splitSpace.leftOrDown);
         }
     }
 
@@ -221,29 +218,29 @@ public class KdTree {
         if (rect == null) {
             throw new IllegalArgumentException();
         }
-        if (isEmpty()){
+        if (isEmpty()) {
             return new Bag<>();
         }
 
-        RectHV full = new RectHV(0,0,1,1);
-        return range(rect,full,root,false);
+        RectHV full = new RectHV(0, 0, 1, 1);
+        return range(rect, full, root, false);
     }
 
-    private Bag<Point2D> range(RectHV rect,RectHV space,Node node,boolean isHorizontal){
+    private Bag<Point2D> range(RectHV rect, RectHV space, Node node, boolean isHorizontal) {
         Bag<Point2D> pointBag = new Bag<>();
 
-        if (rect.contains(node.point)){
+        if (rect.contains(node.point)) {
             pointBag.add(node.point);
         }
 
-        SplitSpace splitSpace = new SplitSpace(node,space,isHorizontal);
-        if (node.big!=null && splitSpace.rightOrUp.intersects(rect)) {
+        SplitSpace splitSpace = new SplitSpace(node, space, isHorizontal);
+        if (node.big != null && splitSpace.rightOrUp.intersects(rect)) {
             for (Point2D point2D : range(rect, splitSpace.rightOrUp, node.big, !isHorizontal)) {
                 pointBag.add(point2D);
             }
         }
-        if (node.small!=null && splitSpace.leftOrDown.intersects(rect)){
-            for (Point2D point2D:range(rect,splitSpace.leftOrDown,node.small,!isHorizontal)){
+        if (node.small != null && splitSpace.leftOrDown.intersects(rect)) {
+            for (Point2D point2D : range(rect, splitSpace.leftOrDown, node.small, !isHorizontal)) {
                 pointBag.add(point2D);
             }
         }
@@ -252,13 +249,14 @@ public class KdTree {
     }
 
     public Point2D nearest(Point2D p) {
-        class NodeV2{
+        class NodeV2 {
             Node node;
             RectHV rectHV;
             boolean isHorizontal;
-            NodeV2(Node node,RectHV rectHV,boolean isHorizontal){
-                this.node=node;
-                this.rectHV=rectHV;
+
+            NodeV2(Node node, RectHV rectHV, boolean isHorizontal) {
+                this.node = node;
+                this.rectHV = rectHV;
                 this.isHorizontal = isHorizontal;
             }
         }
@@ -267,18 +265,18 @@ public class KdTree {
         if (p == null) {
             throw new IllegalArgumentException();
         }
-        if (isEmpty()){
+        if (isEmpty()) {
             return null;
         }
-        if (size==1){
+        if (size == 1) {
             return root.point;
         }
 
         Stack<NodeV2> stack = new Stack<>();
         Point2D nearsetPoint = root.point;
         double minDistance = root.point.distanceSquaredTo(p);
-        RectHV full = new RectHV(0,0,1,1);
-        stack.push(new NodeV2(root,full,false));
+        RectHV full = new RectHV(0, 0, 1, 1);
+        stack.push(new NodeV2(root, full, false));
         while (!stack.isEmpty()) {
             NodeV2 nodeV2 = stack.pop();
             double distance = nodeV2.node.point.distanceSquaredTo(p);
@@ -337,7 +335,7 @@ public class KdTree {
         StdDraw.enableDoubleBuffering();
         KdTree kdtree = new KdTree();
         final int NUM_POINT = 5;
-        while (true){
+        while (true) {
             if (StdDraw.isMousePressed()) {
                 double x = StdDraw.mouseX();
                 double y = StdDraw.mouseY();
@@ -350,7 +348,7 @@ public class KdTree {
                     kdtree.draw();
                     StdDraw.show();
                 }
-                if (kdtree.size()>=NUM_POINT){
+                if (kdtree.size() >= NUM_POINT) {
                     StdDraw.pause(500);
                     StdDraw.clear();
                     StdDraw.pause(450);

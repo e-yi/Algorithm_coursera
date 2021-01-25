@@ -1,4 +1,3 @@
-import edu.princeton.cs.algs4.TrieST;
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.StdOut;
 
@@ -8,25 +7,26 @@ import java.util.Set;
 
 public class BoggleSolver {
 
-    private class MyTrieST{
+    private class MyTrieST {
         private Node root;
         private Set<String> wordSet = new HashSet<>();
 
-        class Node{
+        class Node {
             Node[] next = new Node[26];
             boolean endOfWord = false;
         }
 
-        MyTrieST(){}
+        MyTrieST() {
+        }
 
-        boolean contains(String key){
+        boolean contains(String key) {
             return wordSet.contains(key);
         }
 
-        void put(String key){
+        void put(String key) {
 //            assert key is in A-Z
             if (key == null) throw new IllegalArgumentException("first argument to put() is null");
-            else{
+            else {
                 root = put(root, key, 0);
                 wordSet.add(key);
             }
@@ -34,13 +34,13 @@ public class BoggleSolver {
 
         private Node put(Node x, String key, int d) {
             if (x == null) x = new Node();
-            if(d == key.length()){
+            if (d == key.length()) {
                 x.endOfWord = true;
                 return x;
             }
 
-            int c = key.charAt(d)-'A';
-            x.next[c] = put(x.next[c], key, d+1);
+            int c = key.charAt(d) - 'A';
+            x.next[c] = put(x.next[c], key, d + 1);
             return x;
         }
 
@@ -53,7 +53,7 @@ public class BoggleSolver {
     // (You can assume each word in the dictionary contains only the uppercase letters A through Z.)
     public BoggleSolver(String[] dictionary) {
         trieST = new MyTrieST();
-        for (String word:dictionary) {
+        for (String word : dictionary) {
             trieST.put(word);
         }
     }
@@ -69,11 +69,11 @@ public class BoggleSolver {
 
         Set<String> validWords = new HashSet<>();
 
-        boolean[] path = new boolean[row*col];
+        boolean[] path = new boolean[row * col];
 
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < col; j++) {
-                dfsBoard(i,j,"",path,validWords,board,trieST.root);
+                dfsBoard(i, j, "", path, validWords, board, trieST.root);
             }
         }
 
@@ -81,7 +81,6 @@ public class BoggleSolver {
     }
 
     /**
-     *
      * @param i
      * @param j
      * @param prefix
@@ -90,28 +89,28 @@ public class BoggleSolver {
      */
     private void dfsBoard(int i, int j, String prefix, boolean[] path,
                           Set<String> set, BoggleBoard board,
-                          MyTrieST.Node lastNode){
+                          MyTrieST.Node lastNode) {
         // 合法性检查
-        if (i<0||j<0||i>=board.rows()||j>=board.cols()){
+        if (i < 0 || j < 0 || i >= board.rows() || j >= board.cols()) {
             return;
         }
 
         // 检查是否已经使用过
-        if(path[i*board.cols()+j]){
+        if (path[i * board.cols() + j]) {
             return;
         }
 
-        String tail = String.valueOf(board.getLetter(i,j));
-        if (tail.equals("Q")){
+        String tail = String.valueOf(board.getLetter(i, j));
+        if (tail.equals("Q")) {
             tail = tail.concat("U");
         }
 
         MyTrieST.Node temp = lastNode;
-        for(char c : tail.toCharArray()){
-            temp = temp.next[c-'A'];
+        for (char c : tail.toCharArray()) {
+            temp = temp.next[c - 'A'];
 
             // 检查是否有希望
-            if (temp==null){
+            if (temp == null) {
                 return;
             }
         }
@@ -119,16 +118,16 @@ public class BoggleSolver {
         String s = prefix.concat(tail);
 
         // 检查是否成功
-        if (temp.endOfWord && s.length()>2){
+        if (temp.endOfWord && s.length() > 2) {
             set.add(s);
         }
 
         boolean[] myPath = path.clone();
-        myPath[i*board.cols()+j] = true;
+        myPath[i * board.cols() + j] = true;
 
         for (int k = -1; k < 2; k++) {
             for (int l = -1; l < 2; l++) {
-                dfsBoard(i+k,j+l,s,myPath,set,board,temp);
+                dfsBoard(i + k, j + l, s, myPath, set, board, temp);
             }
         }
     }
@@ -137,24 +136,24 @@ public class BoggleSolver {
     // Returns the score of the given word if it is in the dictionary, zero otherwise.
     // (You can assume the word contains only the uppercase letters A through Z.)
     public int scoreOf(String word) {
-        if (!trieST.contains(word)){
+        if (!trieST.contains(word)) {
             return 0;
         }
 
         int score;
         int len = word.length();
 
-        if (len>=8){
+        if (len >= 8) {
             score = 11;
-        }else if (len>=7){
+        } else if (len >= 7) {
             score = 5;
-        }else if (len>=6){
+        } else if (len >= 6) {
             score = 3;
-        }else if (len>=5){
+        } else if (len >= 5) {
             score = 2;
-        }else if (len>=3){
+        } else if (len >= 3) {
             score = 1;
-        }else {
+        } else {
             score = 0;
         }
 

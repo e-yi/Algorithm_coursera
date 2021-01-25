@@ -5,14 +5,14 @@ import java.util.LinkedList;
 
 public class BruteCollinearPoints {
 
-    private LinkedList<LineSegment> segmentLinkedList=new LinkedList<>();
+    private LinkedList<LineSegment> segmentLinkedList = new LinkedList<>();
 
     public BruteCollinearPoints(Point[] points) {
         // finds all line segments containing 4 points
         if (points == null) {
             throw new IllegalArgumentException();
         }
-        for (Point p:points) {
+        for (Point p : points) {
             if (p == null) {
                 throw new IllegalArgumentException();
             }
@@ -21,11 +21,11 @@ public class BruteCollinearPoints {
         points = points.clone();
         Arrays.sort(points);
         Point p = null;
-        for(Point point:points){
-            if (point.equals(p)){
+        for (Point point : points) {
+            if (point.equals(p)) {
                 throw new IllegalArgumentException();
             }
-            p=point;
+            p = point;
         }
 
         //StdOut.println(java.util.Arrays.toString(points));

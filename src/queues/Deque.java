@@ -147,7 +147,7 @@ public class Deque<Item> implements Iterable<Item> {
         Deque<Integer> deque = new Deque<Integer>();
         deque.addLast(1);
         for (Integer i : deque
-                ) {
+        ) {
             StdOut.print(i);
         }
     }   // unit testing (optional)

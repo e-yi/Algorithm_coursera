@@ -1,7 +1,6 @@
 import edu.princeton.cs.algs4.Digraph;
 import edu.princeton.cs.algs4.DirectedCycle;
 import edu.princeton.cs.algs4.In;
-import edu.princeton.cs.algs4.StdIn;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,7 +33,7 @@ public class WordNet {
             throw new IllegalArgumentException();
         }
 
-        int i=0;
+        int i = 0;
         String line;
         In in = new In(synsets);
         while (true) {
@@ -63,16 +62,16 @@ public class WordNet {
         digraph = new Digraph(num);
 
         in = new In(hypernyms);
-        while (true){
+        while (true) {
             line = in.readLine();
-            if (line==null){
+            if (line == null) {
                 break;
             }
-            i =Integer.parseInt(line.split(",")[0]);
+            i = Integer.parseInt(line.split(",")[0]);
             String[] ids = line.split(",");
-            for (int j=1;j<ids.length;j++){
+            for (int j = 1; j < ids.length; j++) {
                 int hypernym = Integer.parseInt(ids[j]);
-                digraph.addEdge(i,hypernym);
+                digraph.addEdge(i, hypernym);
             }
             i++;
         }
@@ -81,22 +80,22 @@ public class WordNet {
         //if is not a DAG throw exception
         boolean isDAG = false;
         for (int j = 0; j < num; j++) {
-            if (digraph.outdegree(j)==0){
-                if (!isDAG){
+            if (digraph.outdegree(j) == 0) {
+                if (!isDAG) {
                     //handle multiple roots situations
-                    isDAG=true;
-                }else {
+                    isDAG = true;
+                } else {
                     throw new IllegalArgumentException();
                 }
             }
         }
-        if (isDAG){
+        if (isDAG) {
             DirectedCycle cycle = new DirectedCycle(digraph);
-            if (cycle.hasCycle()){
+            if (cycle.hasCycle()) {
                 isDAG = false;
             }
         }
-        if (!isDAG){
+        if (!isDAG) {
             throw new IllegalArgumentException();
         }
 
@@ -110,41 +109,41 @@ public class WordNet {
 
     public boolean isNoun(String word) {
         // is the word a WordNet noun?
-        if (word==null){
+        if (word == null) {
             throw new IllegalArgumentException();
         }
         return noun2id.containsKey(word);
     }
 
     public int distance(String nounA, String nounB) {
-        if (nounA==null||nounB==null){
+        if (nounA == null || nounB == null) {
             throw new IllegalArgumentException();
         }
         // distance between nounA and nounB (defined below)
         Iterable<Integer> a = noun2id.get(nounA);
         Iterable<Integer> b = noun2id.get(nounB);
-        if (a==null||b==null){
+        if (a == null || b == null) {
             throw new IllegalArgumentException();
         }
-        return sap.length(a,b);
+        return sap.length(a, b);
     }
 
     public String sap(String nounA, String nounB) {
         // a synset (second field of synsets.txt) that is the common ancestor of nounA and nounB
         // in a shortest ancestral path (defined below)
-        if (nounA==null||nounB==null){
+        if (nounA == null || nounB == null) {
             throw new IllegalArgumentException();
         }
         Iterable<Integer> a = noun2id.get(nounA);
         Iterable<Integer> b = noun2id.get(nounB);
-        if (a==null||b==null) {
+        if (a == null || b == null) {
             throw new IllegalArgumentException();
         }
-        int idx = sap.ancestor(a,b);
+        int idx = sap.ancestor(a, b);
         return id2noun.get(idx);
     }
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         // do unit testing of this class
         WordNet wordNet = new WordNet(
                 "./testFile/wordnet/synsets15.txt", "./testFile/wordnet/hypernyms15Tree.txt");

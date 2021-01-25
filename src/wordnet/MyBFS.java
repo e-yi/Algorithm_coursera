@@ -1,8 +1,6 @@
-import edu.princeton.cs.algs4.Stack;
-import edu.princeton.cs.algs4.Queue;
 import edu.princeton.cs.algs4.Digraph;
-import edu.princeton.cs.algs4.In;
-import edu.princeton.cs.algs4.StdOut;
+import edu.princeton.cs.algs4.Queue;
+import edu.princeton.cs.algs4.Stack;
 
 public class MyBFS {
 
@@ -152,7 +150,7 @@ public class MyBFS {
         }
         int V = marked.length;
         for (Integer v : vertices) {
-            if (v==null||v < 0 || v >= V) {
+            if (v == null || v < 0 || v >= V) {
                 throw new IllegalArgumentException("vertex " + v + " is not between 0 and " + (V - 1));
             }
         }
